@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Goal, Calendar, Timer, Dumbbell, Zap } from "lucide-react";
 import { getServerSession } from "@/app/_lib/auth-server";
 import { getWorkoutPlanById } from "@/app/_lib/api/fetch-generated";
+import { needsOnboarding } from "@/app/_lib/check-onboarding";
 import { Navbar } from "@/app/_components/navbar";
 
 const WEEKDAY_LABELS: Record<string, string> = {
@@ -33,6 +34,7 @@ interface PageProps {
 export default async function WorkoutPlanPage({ params }: PageProps) {
   const session = await getServerSession();
   if (!session) redirect("/auth");
+  if (await needsOnboarding()) redirect("/onboarding");
 
   const { id } = await params;
 

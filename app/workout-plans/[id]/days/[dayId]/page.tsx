@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Calendar, Timer, Dumbbell, Zap } from "lucide-react";
 import { getServerSession } from "@/app/_lib/auth-server";
 import { getWorkoutDayById } from "@/app/_lib/api/fetch-generated";
+import { needsOnboarding } from "@/app/_lib/check-onboarding";
 import { Navbar } from "@/app/_components/navbar";
 import { BackButton } from "./_components/back-button";
 import { StartWorkoutButton } from "./_components/start-workout-button";
@@ -36,6 +37,7 @@ interface PageProps {
 export default async function WorkoutDayPage({ params }: PageProps) {
   const session = await getServerSession();
   if (!session) redirect("/auth");
+  if (await needsOnboarding()) redirect("/onboarding");
 
   const { id: workoutPlanId, dayId: workoutDayId } = await params;
 

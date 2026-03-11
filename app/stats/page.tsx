@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { getServerSession } from "@/app/_lib/auth-server";
 import { getStats } from "@/app/_lib/api/fetch-generated";
+import { needsOnboarding } from "@/app/_lib/check-onboarding";
 import { Navbar } from "@/app/_components/navbar";
 import { cn } from "@/lib/utils";
 
@@ -110,6 +111,7 @@ function formatTotalTime(totalSeconds: number): string {
 export default async function StatsPage() {
   const session = await getServerSession();
   if (!session) redirect("/auth");
+  if (await needsOnboarding()) redirect("/onboarding");
 
   const today = dayjs();
   const from = today.subtract(2, "month").startOf("month").format("YYYY-MM-DD");

@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import dayjs from "dayjs";
 import { getServerSession } from "@/app/_lib/auth-server";
-import { getHomeData } from "@/app/_lib/api/fetch-generated";
+import { getHomeData, getUserTrainData } from "@/app/_lib/api/fetch-generated";
 import { Navbar } from "@/app/_components/navbar";
 import { ConsistencyTracker } from "@/app/_components/consistency-tracker";
 import { WorkoutDayCard } from "@/app/_components/workout-day-card";
@@ -16,12 +16,20 @@ export default async function Home() {
   const todayDate = dayjs().format("YYYY-MM-DD");
 
   let homeData = null;
+  let trainData = null;
   try {
-    const homeResponse = await getHomeData(todayDate);
+    const [homeResponse, trainResponse] = await Promise.all([
+      getHomeData(todayDate),
+      getUserTrainData(),
+    ]);
     homeData = homeResponse.status === 200 ? homeResponse.data : null;
+    trainData = trainResponse.status === 200 ? trainResponse.data : null;
   } catch {
     homeData = null;
+    trainData = null;
   }
+
+  if (!homeData || !trainData) redirect("/onboarding");
 
   return (
     <div className="flex min-h-dvh flex-col bg-white pb-24">

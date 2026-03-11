@@ -3,12 +3,14 @@ import Image from "next/image";
 import { Weight, Ruler, BicepsFlexed, User } from "lucide-react";
 import { getServerSession } from "@/app/_lib/auth-server";
 import { getUserTrainData } from "@/app/_lib/api/fetch-generated";
+import { needsOnboarding } from "@/app/_lib/check-onboarding";
 import { Navbar } from "@/app/_components/navbar";
 import { SignOutButton } from "./_components/sign-out-button";
 
 export default async function ProfilePage() {
   const session = await getServerSession();
   if (!session) redirect("/auth");
+  if (await needsOnboarding()) redirect("/onboarding");
 
   let trainData = null;
   try {
