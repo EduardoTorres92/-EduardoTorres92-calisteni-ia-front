@@ -1,12 +1,13 @@
 import { redirect } from "next/navigation";
 import Image from "next/image";
-import { Calendar, Timer, Dumbbell, Zap, CircleHelp } from "lucide-react";
+import { Calendar, Timer, Dumbbell, Zap } from "lucide-react";
 import { getServerSession } from "@/app/_lib/auth-server";
 import { getWorkoutDayById } from "@/app/_lib/api/fetch-generated";
 import { Navbar } from "@/app/_components/navbar";
 import { BackButton } from "./_components/back-button";
 import { StartWorkoutButton } from "./_components/start-workout-button";
 import { WorkoutActions } from "./_components/workout-actions";
+import { ExerciseHelpButton } from "./_components/exercise-help-button";
 
 const WEEKDAY_LABELS: Record<string, string> = {
   MONDAY: "Segunda",
@@ -125,7 +126,7 @@ export default async function WorkoutDayPage({ params }: PageProps) {
                     <span className="font-display text-base font-semibold leading-[1.4] text-foreground">
                       {exercise.name}
                     </span>
-                    <CircleHelp className="size-5 text-muted-foreground" />
+                    <ExerciseHelpButton exerciseName={exercise.name} />
                   </div>
                   <div className="flex gap-1.5">
                     <span className="rounded-full bg-secondary px-2.5 py-1.5 font-display text-xs font-semibold uppercase text-muted-foreground">

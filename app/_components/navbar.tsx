@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { useQueryState, parseAsBoolean } from "nuqs";
 import {
   House,
   Calendar,
@@ -10,6 +11,7 @@ import {
   UserRound,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Chatbot } from "@/app/_components/chat/chatbot";
 
 interface NavbarProps {
   todayWorkoutHref?: string;
@@ -17,48 +19,55 @@ interface NavbarProps {
 
 export function Navbar({ todayWorkoutHref }: NavbarProps) {
   const pathname = usePathname();
+  const [, setChatOpen] = useQueryState(
+    "chat_open",
+    parseAsBoolean.withDefault(false),
+  );
 
   const navItems = [
     { href: "/", icon: House, label: "Home" },
     { href: todayWorkoutHref ?? "#", icon: Calendar, label: "Agenda", matchPrefix: "/workout-plans" },
     { href: "#", icon: Sparkles, label: "AI", featured: true },
-    { href: "#", icon: ChartNoAxesColumn, label: "Stats" },
-    { href: "#", icon: UserRound, label: "Perfil" },
+    { href: "/stats", icon: ChartNoAxesColumn, label: "Stats" },
+    { href: "/profile", icon: UserRound, label: "Perfil" },
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-center gap-6 rounded-t-[20px] border border-border bg-background px-6 py-4">
-      {navItems.map((item) => {
-        const isActive = item.matchPrefix
-          ? pathname.startsWith(item.matchPrefix)
-          : item.href === pathname;
-        const Icon = item.icon;
+    <>
+      <Chatbot />
+      <nav className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-center gap-6 rounded-t-[20px] border border-border bg-background px-6 py-4">
+        {navItems.map((item) => {
+          const isActive = item.matchPrefix
+            ? pathname.startsWith(item.matchPrefix)
+            : item.href === pathname;
+          const Icon = item.icon;
 
-        if (item.featured) {
+          if (item.featured) {
+            return (
+              <button
+                key={item.label}
+                onClick={() => setChatOpen(true)}
+                className="flex items-center justify-center rounded-full bg-primary p-4"
+              >
+                <Icon className="size-6 text-primary-foreground" />
+              </button>
+            );
+          }
+
           return (
             <Link
               key={item.label}
               href={item.href}
-              className="flex items-center justify-center rounded-full bg-primary p-4"
+              className={cn(
+                "flex items-center p-3",
+                isActive ? "text-primary" : "text-muted-foreground"
+              )}
             >
-              <Icon className="size-6 text-primary-foreground" />
+              <Icon className="size-6" />
             </Link>
           );
-        }
-
-        return (
-          <Link
-            key={item.label}
-            href={item.href}
-            className={cn(
-              "flex items-center p-3",
-              isActive ? "text-primary" : "text-muted-foreground"
-            )}
-          >
-            <Icon className="size-6" />
-          </Link>
-        );
-      })}
-    </nav>
+        })}
+      </nav>
+    </>
   );
 }

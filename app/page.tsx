@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import dayjs from "dayjs";
 import { getServerSession } from "@/app/_lib/auth-server";
 import { getHomeData } from "@/app/_lib/api/fetch-generated";
@@ -72,9 +73,9 @@ export default async function Home() {
               <h2 className="font-display text-lg font-semibold leading-[1.4] text-foreground">
                 Consistência
               </h2>
-              <button className="font-display text-xs leading-[1.4] text-[#2b54ff]">
+              <Link href="/stats" className="font-display text-xs leading-[1.4] text-[#2b54ff]">
                 Ver histórico
-              </button>
+              </Link>
             </div>
 
             <ConsistencyTracker
