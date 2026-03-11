@@ -107,7 +107,13 @@ export default async function Home() {
         </>
       )}
 
-      <Navbar />
+      <Navbar
+        todayWorkoutHref={
+          homeData?.todayWorkoutDay
+            ? `/workout-plans/${homeData.todayWorkoutDay.workoutPlanId}/days/${homeData.todayWorkoutDay.id}`
+            : undefined
+        }
+      />
     </div>
   );
 }
