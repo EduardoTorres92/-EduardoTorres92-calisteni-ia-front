@@ -10,6 +10,7 @@ import {
   ChatSuggestions,
   detectSuggestionContext,
 } from "@/app/_components/chat/chat-suggestions";
+import { YouTubeEmbed, extractYouTubeUrls } from "@/app/_components/chat/youtube-embed";
 
 const WELCOME_MESSAGES = [
   "Bem-vindo ao FIT.AI! \u{1F389}",
@@ -123,6 +124,8 @@ export function OnboardingChat() {
           const isLastMessage = idx === messages.length - 1;
           const isActivelyStreaming = isStreaming && isLastMessage;
 
+          const youtubeUrls = extractYouTubeUrls(textContent);
+
           return (
             <div key={message.id} className="pl-5 pr-15">
               <div className="rounded-xl bg-secondary p-3 self-start w-fit">
@@ -139,6 +142,13 @@ export function OnboardingChat() {
                     {textContent}
                   </Streamdown>
                 </div>
+                {youtubeUrls.length > 0 && !isActivelyStreaming && (
+                  <div className="flex flex-col gap-2 mt-2">
+                    {youtubeUrls.map((ytUrl) => (
+                      <YouTubeEmbed key={ytUrl} url={ytUrl} />
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           );

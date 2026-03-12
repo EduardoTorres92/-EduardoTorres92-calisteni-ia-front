@@ -8,6 +8,7 @@ import { Sparkles, X, ArrowUp } from "lucide-react";
 import { Streamdown } from "streamdown";
 import { cn } from "@/lib/utils";
 import { ChatSuggestions, detectSuggestionContext } from "./chat-suggestions";
+import { YouTubeEmbed, extractYouTubeUrls } from "./youtube-embed";
 
 const SUGGESTIONS = ["Monte meu plano de treino"];
 
@@ -160,6 +161,8 @@ export function Chatbot() {
           const isLastMessage = idx === messages.length - 1;
           const isActivelyStreaming = isStreaming && isLastMessage;
 
+          const youtubeUrls = extractYouTubeUrls(textContent);
+
           return (
             <div
               key={message.id}
@@ -174,6 +177,13 @@ export function Chatbot() {
                   {textContent}
                 </Streamdown>
               </div>
+              {youtubeUrls.length > 0 && !isActivelyStreaming && (
+                <div className="flex flex-col gap-2 mt-2">
+                  {youtubeUrls.map((ytUrl) => (
+                    <YouTubeEmbed key={ytUrl} url={ytUrl} />
+                  ))}
+                </div>
+              )}
             </div>
           );
         })}
