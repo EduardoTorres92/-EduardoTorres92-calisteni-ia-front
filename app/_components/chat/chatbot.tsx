@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { useQueryState, parseAsBoolean, parseAsString } from "nuqs";
@@ -51,20 +51,26 @@ export function Chatbot() {
 
   const messagesContainerRef = useRef<HTMLDivElement>(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  const scrollToBottom = useCallback((behavior: ScrollBehavior = "smooth") => {
+    const container = messagesContainerRef.current;
+    if (!container) return;
+    const threshold = 150;
+    const nearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < threshold;
+    if (nearBottom) {
+      messagesEndRef.current?.scrollIntoView({ behavior });
+    }
+  }, []);
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, scrollToBottom]);
 
   useEffect(() => {
     const container = messagesContainerRef.current;
     if (!container || !isStreaming) return;
 
     const observer = new MutationObserver(() => {
-      messagesEndRef.current?.scrollIntoView({ behavior: "instant" });
+      scrollToBottom("instant");
     });
 
     observer.observe(container, {
@@ -74,7 +80,7 @@ export function Chatbot() {
     });
 
     return () => observer.disconnect();
-  }, [isStreaming]);
+  }, [isStreaming, scrollToBottom]);
 
   const handleClose = () => {
     setChatOpen(null);

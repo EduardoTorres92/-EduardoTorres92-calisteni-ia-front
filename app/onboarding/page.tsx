@@ -9,7 +9,7 @@ export default async function OnboardingPage() {
   if (!session) redirect("/auth");
 
   return (
-    <div className="flex min-h-dvh flex-col bg-white">
+    <div className="flex h-dvh flex-col overflow-hidden bg-white">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-border p-5">
         <div className="flex items-center gap-2">
