@@ -37,7 +37,7 @@ export default async function Home() {
       <div className="relative flex h-[296px] shrink-0 flex-col items-start justify-between overflow-hidden rounded-b-[20px] px-5 pb-10 pt-5">
         <div className="absolute inset-0 overflow-hidden rounded-b-[20px]">
           <Image
-            src="/home-banner.jpg"
+            src="/workout-cover-default.png"
             alt=""
             fill
             className="object-cover"
@@ -67,11 +67,16 @@ export default async function Home() {
             </p>
           </div>
 
-          <button className="rounded-full bg-[#2b54ff] px-4 py-2">
-            <span className="font-display text-sm font-semibold text-white">
-              Bora!
-            </span>
-          </button>
+          {homeData?.todayWorkoutDay && (
+            <Link
+              href={`/workout-plans/${homeData.todayWorkoutDay.workoutPlanId}/days/${homeData.todayWorkoutDay.id}`}
+              className="rounded-full bg-[#2b54ff] px-4 py-2"
+            >
+              <span className="font-display text-sm font-semibold text-white">
+                Bora!
+              </span>
+            </Link>
+          )}
         </div>
       </div>
 

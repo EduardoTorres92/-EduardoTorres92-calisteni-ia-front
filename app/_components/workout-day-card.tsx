@@ -36,14 +36,12 @@ export function WorkoutDayCard({
   return (
     <Link href={`/workout-plans/${workoutPlanId}/days/${id}`} className="block">
       <div className="relative flex h-[200px] flex-col items-start justify-between overflow-hidden rounded-xl bg-linear-to-br from-[#2b54ff] to-[#1a3ad4] p-5">
-        {coverImageUrl && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={coverImageUrl}
-            alt={name}
-            className="absolute inset-0 size-full object-cover pointer-events-none rounded-xl"
-          />
-        )}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={coverImageUrl ?? "/workout-cover-default.png"}
+          alt={name}
+          className="absolute inset-0 size-full object-cover pointer-events-none rounded-xl"
+        />
 
         <div className="relative z-10 flex items-center">
           <div className="flex items-center gap-1 rounded-full bg-white/16 px-2.5 py-1.5 backdrop-blur-sm">
