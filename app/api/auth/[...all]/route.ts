@@ -2,6 +2,14 @@ import { NextRequest } from "next/server";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL!;
 
+const HOP_BY_HOP_HEADERS = new Set([
+  "content-encoding",
+  "content-length",
+  "transfer-encoding",
+  "connection",
+  "keep-alive",
+]);
+
 async function handler(request: NextRequest) {
   const url = new URL(request.url);
   const targetPath = url.pathname;
@@ -9,7 +17,7 @@ async function handler(request: NextRequest) {
 
   const headers = new Headers();
   request.headers.forEach((value, key) => {
-    if (key.toLowerCase() !== "host") {
+    if (key.toLowerCase() !== "host" && key.toLowerCase() !== "accept-encoding") {
       headers.set(key, value);
     }
   });
@@ -25,10 +33,14 @@ async function handler(request: NextRequest) {
 
   const responseHeaders = new Headers();
   response.headers.forEach((value, key) => {
-    responseHeaders.append(key, value);
+    if (!HOP_BY_HOP_HEADERS.has(key.toLowerCase())) {
+      responseHeaders.append(key, value);
+    }
   });
 
-  return new Response(response.body, {
+  const body = await response.arrayBuffer();
+
+  return new Response(body, {
     status: response.status,
     headers: responseHeaders,
   });
