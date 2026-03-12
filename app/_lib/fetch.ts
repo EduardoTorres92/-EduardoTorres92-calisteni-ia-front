@@ -37,3 +37,4 @@ export const customFetch = async <T>(
 
   return { status: response.status, data, headers: response.headers } as T;
 };
+
