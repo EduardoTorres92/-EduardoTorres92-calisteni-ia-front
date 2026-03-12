@@ -6,9 +6,11 @@ import { getWorkoutDayById } from "@/app/_lib/api/fetch-generated";
 import { needsOnboarding } from "@/app/_lib/check-onboarding";
 import { Navbar } from "@/app/_components/navbar";
 import { BackButton } from "./_components/back-button";
+import { ExerciseHelpButton } from "./_components/exercise-help-button";
+import { RestTimer } from "./_components/rest-timer";
+import { SetTracker } from "./_components/set-tracker";
 import { StartWorkoutButton } from "./_components/start-workout-button";
 import { WorkoutActions } from "./_components/workout-actions";
-import { ExerciseHelpButton } from "./_components/exercise-help-button";
 
 const WEEKDAY_LABELS: Record<string, string> = {
   MONDAY: "Segunda",
@@ -51,6 +53,12 @@ export default async function WorkoutDayPage({ params }: PageProps) {
   const completedSession = workoutDay.sessions.find((s) => s.completedAt);
   const isCompleted = !!completedSession;
   const hasActiveSession = !!activeSession;
+
+  const activeSessionSets = activeSession?.workoutSets ?? [];
+  const allSetsCompleted =
+    hasActiveSession &&
+    activeSessionSets.length > 0 &&
+    activeSessionSets.every((s) => s.completed);
 
   return (
     <div className="flex min-h-dvh flex-col bg-background pb-24">
@@ -130,7 +138,7 @@ export default async function WorkoutDayPage({ params }: PageProps) {
                     </span>
                     <ExerciseHelpButton exerciseName={exercise.name} />
                   </div>
-                  <div className="flex gap-1.5">
+                  <div className="flex items-center gap-1.5">
                     <span className="rounded-full bg-secondary px-2.5 py-1.5 font-display text-xs font-semibold uppercase text-muted-foreground">
                       {exercise.sets} séries
                     </span>
@@ -142,6 +150,24 @@ export default async function WorkoutDayPage({ params }: PageProps) {
                       {exercise.restTimeInSeconds}S
                     </span>
                   </div>
+                  {hasActiveSession && activeSession && (
+                    <>
+                      <SetTracker
+                        workoutPlanId={workoutPlanId}
+                        workoutDayId={workoutDayId}
+                        sessionId={activeSession.id}
+                        sets={activeSessionSets
+                          .filter((s) => s.exerciseId === exercise.id)
+                          .map((s) => ({
+                            id: s.id,
+                            exerciseId: s.exerciseId,
+                            setNumber: s.setNumber,
+                            completed: s.completed,
+                          }))}
+                      />
+                      <RestTimer durationInSeconds={exercise.restTimeInSeconds} />
+                    </>
+                  )}
                 </div>
               </div>
             ))}
@@ -153,6 +179,7 @@ export default async function WorkoutDayPage({ params }: PageProps) {
             workoutDayId={workoutDayId}
             activeSessionId={activeSession?.id ?? null}
             isCompleted={isCompleted}
+            allSetsCompleted={allSetsCompleted}
           />
         )}
       </div>

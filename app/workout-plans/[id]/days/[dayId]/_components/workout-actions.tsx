@@ -9,6 +9,7 @@ interface WorkoutActionsProps {
   workoutDayId: string;
   activeSessionId: string | null;
   isCompleted: boolean;
+  allSetsCompleted?: boolean;
 }
 
 export function WorkoutActions({
@@ -16,6 +17,7 @@ export function WorkoutActions({
   workoutDayId,
   activeSessionId,
   isCompleted,
+  allSetsCompleted = false,
 }: WorkoutActionsProps) {
   const [isPending, startTransition] = useTransition();
 
@@ -34,8 +36,12 @@ export function WorkoutActions({
   if (activeSessionId) {
     return (
       <Button
-        variant="outline"
-        className="w-full rounded-full border border-border py-3 font-display text-sm font-semibold text-foreground"
+        variant={allSetsCompleted ? "default" : "outline"}
+        className={
+          allSetsCompleted
+            ? "w-full rounded-full bg-primary py-3 font-display text-sm font-semibold text-primary-foreground"
+            : "w-full rounded-full border border-border py-3 font-display text-sm font-semibold text-foreground"
+        }
         disabled={isPending}
         onClick={() => {
           startTransition(() =>
@@ -43,7 +49,11 @@ export function WorkoutActions({
           );
         }}
       >
-        {isPending ? "Finalizando..." : "Marcar como concluído"}
+        {isPending
+          ? "Finalizando..."
+          : allSetsCompleted
+            ? "Todos os sets concluídos! Finalizar treino"
+            : "Marcar como concluído"}
       </Button>
     );
   }

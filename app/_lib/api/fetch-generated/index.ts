@@ -265,6 +265,24 @@ export const GetWorkoutDayById200WeekDay = {
   SUNDAY: "SUNDAY",
 } as const;
 
+export type GetWorkoutDayById200SessionsItemWorkoutSetsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
+  id: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
+  exerciseId: string;
+  setNumber: number;
+  /** @nullable */
+  reps: number | null;
+  /** @nullable */
+  holdTimeInSeconds: number | null;
+  completed: boolean;
+  /**
+   * @nullable
+   * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
+   */
+  completedAt: string | null;
+};
+
 export type GetWorkoutDayById200SessionsItem = {
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
   id: string;
@@ -277,6 +295,7 @@ export type GetWorkoutDayById200SessionsItem = {
    * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))$
    */
   completedAt: string | null;
+  workoutSets?: GetWorkoutDayById200SessionsItemWorkoutSetsItem[];
 };
 
 export type GetWorkoutDayById200 = {
@@ -382,6 +401,39 @@ export type CompleteWorkoutSession404 = {
 };
 
 export type CompleteWorkoutSession500 = {
+  /** @minLength 1 */
+  error: string;
+  /** @minLength 1 */
+  code: string;
+};
+
+export type ToggleWorkoutSet200 = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
+  id: string;
+  setNumber: number;
+  completed: boolean;
+  /**
+   * @nullable
+   * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
+   */
+  completedAt: string | null;
+};
+
+export type ToggleWorkoutSet401 = {
+  /** @minLength 1 */
+  error: string;
+  /** @minLength 1 */
+  code: string;
+};
+
+export type ToggleWorkoutSet404 = {
+  /** @minLength 1 */
+  error: string;
+  /** @minLength 1 */
+  code: string;
+};
+
+export type ToggleWorkoutSet500 = {
   /** @minLength 1 */
   error: string;
   /** @minLength 1 */
@@ -934,6 +986,69 @@ export const completeWorkoutSession = async (
       method: "PATCH",
       headers: { "Content-Type": "application/json", ...options?.headers },
       body: JSON.stringify(completeWorkoutSessionBody),
+    },
+  );
+};
+
+/**
+ * @summary Toggle a workout set completion
+ */
+export type toggleWorkoutSetResponse200 = {
+  data: ToggleWorkoutSet200;
+  status: 200;
+};
+
+export type toggleWorkoutSetResponse401 = {
+  data: ToggleWorkoutSet401;
+  status: 401;
+};
+
+export type toggleWorkoutSetResponse404 = {
+  data: ToggleWorkoutSet404;
+  status: 404;
+};
+
+export type toggleWorkoutSetResponse500 = {
+  data: ToggleWorkoutSet500;
+  status: 500;
+};
+
+export type toggleWorkoutSetResponseSuccess = toggleWorkoutSetResponse200 & {
+  headers: Headers;
+};
+export type toggleWorkoutSetResponseError = (
+  | toggleWorkoutSetResponse401
+  | toggleWorkoutSetResponse404
+  | toggleWorkoutSetResponse500
+) & {
+  headers: Headers;
+};
+
+export type toggleWorkoutSetResponse =
+  | toggleWorkoutSetResponseSuccess
+  | toggleWorkoutSetResponseError;
+
+export const getToggleWorkoutSetUrl = (
+  workoutPlanId: string,
+  workoutDayId: string,
+  sessionId: string,
+  setId: string,
+) => {
+  return `/workout-plans/${workoutPlanId}/days/${workoutDayId}/sessions/${sessionId}/sets/${setId}`;
+};
+
+export const toggleWorkoutSet = async (
+  workoutPlanId: string,
+  workoutDayId: string,
+  sessionId: string,
+  setId: string,
+  options?: RequestInit,
+): Promise<toggleWorkoutSetResponse> => {
+  return customFetch<toggleWorkoutSetResponse>(
+    getToggleWorkoutSetUrl(workoutPlanId, workoutDayId, sessionId, setId),
+    {
+      ...options,
+      method: "PATCH",
     },
   );
 };
