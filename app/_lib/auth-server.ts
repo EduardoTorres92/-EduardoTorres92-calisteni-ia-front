@@ -13,6 +13,7 @@ export async function getServerSession() {
       headers: {
         cookie: cookieHeader,
       },
+      cache: "no-store",
     }
   );
 
