@@ -7,11 +7,12 @@ import { getHomeData, getUserTrainData } from "@/app/_lib/api/fetch-generated";
 import { Navbar } from "@/app/_components/navbar";
 import { ConsistencyTracker } from "@/app/_components/consistency-tracker";
 import { WorkoutDayCard } from "@/app/_components/workout-day-card";
+import { LandingPage } from "@/app/_components/landing-page";
 
 export default async function Home() {
   const session = await getServerSession();
 
-  if (!session) redirect("/auth");
+  if (!session) return <LandingPage />;
 
   const todayDate = dayjs().format("YYYY-MM-DD");
 
@@ -59,7 +60,7 @@ export default async function Home() {
         <div className="relative z-10 flex w-full items-end justify-between">
           <div className="flex flex-col gap-1.5">
             <h1 className="font-display text-2xl font-semibold leading-[1.05] text-white">
-              Olá, {session.user.name?.split(" ")[0] ?? ""}
+              Ola, {session.user.name?.split(" ")[0] ?? ""}
             </h1>
             <p className="font-display text-sm leading-[1.15] text-white/70">
               Bora treinar hoje?
@@ -79,10 +80,10 @@ export default async function Home() {
           <section className="flex flex-col gap-3 px-5 pt-5">
             <div className="flex items-center justify-between">
               <h2 className="font-display text-lg font-semibold leading-[1.4] text-foreground">
-                Consistência
+                Consistencia
               </h2>
               <Link href="/stats" className="font-display text-xs leading-[1.4] text-[#2b54ff]">
-                Ver histórico
+                Ver historico
               </Link>
             </div>
 
