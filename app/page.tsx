@@ -30,7 +30,7 @@ export default async function Home() {
     trainData = null;
   }
 
-  if (!homeData || !trainData) redirect("/onboarding");
+  if (!trainData) redirect("/onboarding");
 
   return (
     <div className="flex min-h-dvh flex-col bg-white pb-24">
