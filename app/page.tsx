@@ -98,9 +98,9 @@ export default async function Home() {
               <h2 className="font-display text-lg font-semibold leading-[1.4] text-foreground">
                 Treino de Hoje
               </h2>
-              <button className="font-display text-xs leading-[1.4] text-[#2b54ff]">
+              <Link href={`/workout-plans/${homeData.activeWorkoutPlanId}`} className="font-display text-xs leading-[1.4] text-[#2b54ff]">
                 Ver treinos
-              </button>
+              </Link>
             </div>
 
             {homeData.todayWorkoutDay ? (
