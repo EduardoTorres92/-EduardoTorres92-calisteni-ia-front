@@ -290,6 +290,8 @@ export type GetWorkoutDayById200ExercisesItem = {
   sets: number;
   reps: number;
   restTimeInSeconds: number;
+  /** URL do vídeo demonstrativo (YouTube) */
+  demonstrationVideoUrl?: string | null;
 };
 
 export type GetWorkoutDayById200WeekDay =
@@ -521,6 +523,8 @@ export type GetHomeData200 = {
   todayWorkoutDay?: GetHomeData200TodayWorkoutDay;
   workoutStreak: number;
   consistencyByDay: GetHomeData200ConsistencyByDay;
+  completedWorkoutsCount: number;
+  consistencyPercent: number;
 };
 
 export type GetHomeData401 = {

@@ -5,6 +5,7 @@ import { getServerSession } from "@/app/_lib/auth-server";
 import { getWorkoutDayById } from "@/app/_lib/api/fetch-generated";
 import { needsOnboarding } from "@/app/_lib/check-onboarding";
 import { Navbar } from "@/app/_components/navbar";
+import { YouTubeEmbed } from "@/app/_components/chat/youtube-embed";
 import { BackButton } from "./_components/back-button";
 import { ExerciseHelpButton } from "./_components/exercise-help-button";
 import { RestTimer } from "./_components/rest-timer";
@@ -138,6 +139,9 @@ export default async function WorkoutDayPage({ params }: PageProps) {
                     </span>
                     <ExerciseHelpButton exerciseName={exercise.name} />
                   </div>
+                  {exercise.demonstrationVideoUrl && (
+                    <YouTubeEmbed url={exercise.demonstrationVideoUrl} />
+                  )}
                   <div className="flex items-center gap-1.5">
                     <span className="rounded-full bg-secondary px-2.5 py-1.5 font-display text-xs font-semibold uppercase text-muted-foreground">
                       {exercise.sets} séries

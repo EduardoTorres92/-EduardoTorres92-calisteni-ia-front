@@ -83,6 +83,41 @@ export default async function Home() {
       {homeData && (
         <>
           <section className="flex flex-col gap-3 px-5 pt-5">
+            <h2 className="font-display text-lg font-semibold leading-[1.4] text-foreground">
+              Seu progresso
+            </h2>
+            <div className="grid grid-cols-3 gap-2">
+              <div className="flex flex-col gap-0.5 rounded-xl border border-[#f1f1f1] bg-[#fafafa] p-3">
+                <span className="font-display text-xl" aria-hidden>🔥</span>
+                <span className="font-display text-lg font-semibold leading-tight text-foreground">
+                  {homeData.workoutStreak}
+                </span>
+                <span className="font-display text-xs text-muted-foreground">
+                  {homeData.workoutStreak === 1 ? "dia de sequência" : "dias de sequência"}
+                </span>
+              </div>
+              <div className="flex flex-col gap-0.5 rounded-xl border border-[#f1f1f1] bg-[#fafafa] p-3">
+                <span className="font-display text-xl" aria-hidden>💪</span>
+                <span className="font-display text-lg font-semibold leading-tight text-foreground">
+                  {homeData.completedWorkoutsCount}
+                </span>
+                <span className="font-display text-xs text-muted-foreground">
+                  treinos concluídos
+                </span>
+              </div>
+              <div className="flex flex-col gap-0.5 rounded-xl border border-[#f1f1f1] bg-[#fafafa] p-3">
+                <span className="font-display text-xl" aria-hidden>📈</span>
+                <span className="font-display text-lg font-semibold leading-tight text-foreground">
+                  {homeData.consistencyPercent}%
+                </span>
+                <span className="font-display text-xs text-muted-foreground">
+                  consistência
+                </span>
+              </div>
+            </div>
+          </section>
+
+          <section className="flex flex-col gap-3 px-5 pt-5">
             <div className="flex items-center justify-between">
               <h2 className="font-display text-lg font-semibold leading-[1.4] text-foreground">
                 Consistencia

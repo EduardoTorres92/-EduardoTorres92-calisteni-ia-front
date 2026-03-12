@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 function extractVideoId(url: string): string | null {
   try {
     const parsed = new URL(url);
@@ -36,6 +38,7 @@ interface YouTubeEmbedProps {
 }
 
 export function YouTubeEmbed({ url }: YouTubeEmbedProps) {
+  const [thumbnailError, setThumbnailError] = useState(false);
   const videoId = extractVideoId(url);
   if (!videoId) return null;
 
@@ -48,13 +51,20 @@ export function YouTubeEmbed({ url }: YouTubeEmbedProps) {
       rel="noopener noreferrer"
       className="group relative mt-2 block h-[140px] w-full overflow-hidden rounded-xl"
     >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={thumbnailUrl}
-        alt="Vídeo demonstrativo"
-        className="absolute inset-0 size-full object-cover rounded-xl"
-      />
-      <div className="absolute inset-0 rounded-xl bg-black/20 transition-colors group-hover:bg-black/30" />
+      {!thumbnailError ? (
+        <>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={thumbnailUrl}
+            alt="Vídeo demonstrativo"
+            className="absolute inset-0 size-full object-cover rounded-xl"
+            onError={() => setThumbnailError(true)}
+          />
+          <div className="absolute inset-0 rounded-xl bg-black/20 transition-colors group-hover:bg-black/30" />
+        </>
+      ) : (
+        <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-muted" />
+      )}
       <div className="absolute inset-0 flex items-center justify-center">
         <svg
           viewBox="0 0 68 48"
