@@ -6,6 +6,10 @@ import { DefaultChatTransport } from "ai";
 import { ArrowUp } from "lucide-react";
 import { Streamdown } from "streamdown";
 import { cn } from "@/lib/utils";
+import {
+  ChatSuggestions,
+  detectSuggestionContext,
+} from "@/app/_components/chat/chat-suggestions";
 
 const WELCOME_MESSAGES = [
   "Bem-vindo ao FIT.AI! \u{1F389}",
@@ -147,6 +151,31 @@ export function OnboardingChat() {
             </button>
           </div>
         )}
+
+        {/* Contextual suggestion buttons */}
+        {(() => {
+          const lastAiMsg = [...messages].reverse().find((m) => m.role === "assistant");
+          const lastMsg = messages[messages.length - 1];
+          if (lastAiMsg && lastMsg?.role === "assistant") {
+            const text = lastAiMsg.parts
+              ?.filter((p) => p.type === "text")
+              .map((p) => p.text)
+              .join("") ?? "";
+            const suggestionType = detectSuggestionContext(text);
+            if (suggestionType) {
+              return (
+                <ChatSuggestions
+                  suggestionType={suggestionType}
+                  onSend={(val) => {
+                    sendMessage({ text: val });
+                  }}
+                  disabled={isStreaming}
+                />
+              );
+            }
+          }
+          return null;
+        })()}
 
         <div ref={messagesEndRef} />
       </div>

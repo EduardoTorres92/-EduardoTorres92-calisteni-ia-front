@@ -7,6 +7,7 @@ import { needsOnboarding } from "@/app/_lib/check-onboarding";
 import { Navbar } from "@/app/_components/navbar";
 import { BackButton } from "./_components/back-button";
 import { ExerciseHelpButton } from "./_components/exercise-help-button";
+import { MuscleMap } from "./_components/muscle-map";
 import { RestTimer } from "./_components/rest-timer";
 import { SetTracker } from "./_components/set-tracker";
 import { StartWorkoutButton } from "./_components/start-workout-button";
@@ -122,6 +123,10 @@ export default async function WorkoutDayPage({ params }: PageProps) {
             )}
           </div>
         </div>
+
+        {workoutDay.targetMuscleGroups && workoutDay.targetMuscleGroups.length > 0 && (
+          <MuscleMap targetMuscleGroups={workoutDay.targetMuscleGroups} />
+        )}
 
         <div className="flex flex-col gap-3">
           {workoutDay.exercises

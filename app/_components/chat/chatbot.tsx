@@ -7,6 +7,7 @@ import { useQueryState, parseAsBoolean, parseAsString } from "nuqs";
 import { Sparkles, X, ArrowUp } from "lucide-react";
 import { Streamdown } from "streamdown";
 import { cn } from "@/lib/utils";
+import { ChatSuggestions, detectSuggestionContext } from "./chat-suggestions";
 
 const SUGGESTIONS = ["Monte meu plano de treino"];
 
@@ -170,6 +171,29 @@ export function Chatbot() {
             </div>
           );
         })}
+        {/* Contextual suggestion buttons */}
+        {(() => {
+          const lastAiMsg = [...messages].reverse().find((m) => m.role === "assistant");
+          const lastMsg = messages[messages.length - 1];
+          if (lastAiMsg && lastMsg?.role === "assistant") {
+            const text = lastAiMsg.parts
+              ?.filter((p) => p.type === "text")
+              .map((p) => p.text)
+              .join("") ?? "";
+            const suggestionType = detectSuggestionContext(text);
+            if (suggestionType) {
+              return (
+                <ChatSuggestions
+                  suggestionType={suggestionType}
+                  onSend={(val) => sendMessage({ text: val })}
+                  disabled={isStreaming}
+                />
+              );
+            }
+          }
+          return null;
+        })()}
+
         <div ref={messagesEndRef} />
       </div>
 

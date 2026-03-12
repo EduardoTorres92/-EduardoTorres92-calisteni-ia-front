@@ -306,6 +306,7 @@ export type GetWorkoutDayById200 = {
   /** @nullable */
   coverImageUrl: string | null;
   estimatedDurationInSeconds: number;
+  targetMuscleGroups: string[];
   exercises: GetWorkoutDayById200ExercisesItem[];
   weekDay: GetWorkoutDayById200WeekDay;
   sessions: GetWorkoutDayById200SessionsItem[];
