@@ -3,9 +3,11 @@ import Image from "next/image";
 import Link from "next/link";
 import dayjs from "dayjs";
 import { getServerSession } from "@/app/_lib/auth-server";
+import { getProgression } from "@/app/_lib/api/adaptive";
 import { getHomeData, getUserTrainData } from "@/app/_lib/api/fetch-generated";
 import { Navbar } from "@/app/_components/navbar";
 import { ConsistencyTracker } from "@/app/_components/consistency-tracker";
+import { ProgressionPreview } from "@/app/_components/progression-preview";
 import { WorkoutDayCard } from "@/app/_components/workout-day-card";
 import { LandingPage } from "@/app/_components/landing-page";
 
@@ -18,16 +20,20 @@ export default async function Home() {
 
   let homeData = null;
   let trainData = null;
+  let progressionData: Awaited<ReturnType<typeof getProgression>>["data"] = { progressions: [] };
   try {
-    const [homeResponse, trainResponse] = await Promise.all([
+    const [homeResponse, trainResponse, progResponse] = await Promise.all([
       getHomeData(todayDate),
       getUserTrainData(),
+      getProgression(),
     ]);
     homeData = homeResponse.status === 200 ? homeResponse.data : null;
     trainData = trainResponse.status === 200 ? trainResponse.data : null;
+    progressionData = progResponse.status === 200 ? progResponse.data : { progressions: [] };
   } catch {
     homeData = null;
     trainData = null;
+    progressionData = { progressions: [] };
   }
 
   if (!trainData) redirect("/onboarding");
@@ -133,6 +139,8 @@ export default async function Home() {
               todayDate={todayDate}
             />
           </section>
+
+          <ProgressionPreview progressions={progressionData.progressions} />
 
           <section className="flex flex-col gap-3 p-5">
             <div className="flex items-center justify-between">

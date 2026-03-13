@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import type { ExercisePerformanceItem } from "@/app/_lib/api/adaptive";
 import {
   startWorkoutSession,
   completeWorkoutSession,
@@ -19,10 +20,13 @@ export async function completeSessionAction(
   workoutPlanId: string,
   workoutDayId: string,
   sessionId: string,
+  performance?: ExercisePerformanceItem[],
 ) {
-  await completeWorkoutSession(workoutPlanId, workoutDayId, sessionId, {
+  const body = {
     completedAt: new Date().toISOString(),
-  });
+    ...(performance?.length ? { performance } : {}),
+  };
+  await completeWorkoutSession(workoutPlanId, workoutDayId, sessionId, body as Parameters<typeof completeWorkoutSession>[3]);
   revalidatePath(`/workout-plans/${workoutPlanId}/days/${workoutDayId}`);
 }
 

@@ -184,6 +184,9 @@ export default async function WorkoutDayPage({ params }: PageProps) {
             activeSessionId={activeSession?.id ?? null}
             isCompleted={isCompleted}
             allSetsCompleted={allSetsCompleted}
+            exercises={workoutDay.exercises
+              .sort((a, b) => a.order - b.order)
+              .map((e) => ({ id: e.id, name: e.name, targetReps: e.reps }))}
           />
         )}
       </div>

@@ -2,10 +2,13 @@ import { redirect } from "next/navigation";
 import Image from "next/image";
 import { Weight, Ruler, BicepsFlexed, User } from "lucide-react";
 import { getServerSession } from "@/app/_lib/auth-server";
+import { getProgression, getPerformanceHistory } from "@/app/_lib/api/adaptive";
 import { getUserTrainData } from "@/app/_lib/api/fetch-generated";
 import { needsOnboarding } from "@/app/_lib/check-onboarding";
 import { Navbar } from "@/app/_components/navbar";
 import { SignOutButton } from "./_components/sign-out-button";
+import { ProgressionSection } from "./_components/progression-section";
+import { PerformanceCharts } from "./_components/performance-charts";
 
 export default async function ProfilePage() {
   const session = await getServerSession();
@@ -18,6 +21,19 @@ export default async function ProfilePage() {
     trainData = response.status === 200 ? response.data : null;
   } catch {
     trainData = null;
+  }
+
+  let progressionData: Awaited<ReturnType<typeof getProgression>>["data"] = { progressions: [] };
+  let performanceHistory: Awaited<ReturnType<typeof getPerformanceHistory>>["data"] = { history: [] };
+  try {
+    const [progRes, histRes] = await Promise.all([
+      getProgression(),
+      getPerformanceHistory({ limit: 50 }),
+    ]);
+    if (progRes.status === 200) progressionData = progRes.data;
+    if (histRes.status === 200) performanceHistory = histRes.data;
+  } catch {
+    // keep defaults
   }
 
   const weightKg = trainData
@@ -126,6 +142,12 @@ export default async function ProfilePage() {
             </div>
           </div>
         </div>
+
+        {/* Progressão */}
+        <ProgressionSection progressions={progressionData.progressions} />
+
+        {/* Gráficos de desempenho */}
+        <PerformanceCharts history={performanceHistory.history} />
 
         {/* Sign Out */}
         <SignOutButton />
