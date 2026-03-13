@@ -28,6 +28,7 @@ export async function completeSessionAction(
   };
   await completeWorkoutSession(workoutPlanId, workoutDayId, sessionId, body as Parameters<typeof completeWorkoutSession>[3]);
   revalidatePath(`/workout-plans/${workoutPlanId}/days/${workoutDayId}`);
+  revalidatePath("/");
 }
 
 export async function toggleSetAction(

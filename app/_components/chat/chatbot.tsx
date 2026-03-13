@@ -10,7 +10,11 @@ import { cn } from "@/lib/utils";
 import { ChatSuggestions, detectSuggestionContext } from "./chat-suggestions";
 import { YouTubeEmbed, extractYouTubeUrls } from "./youtube-embed";
 
-const SUGGESTIONS = ["Monte meu plano de treino"];
+const SUGGESTIONS = [
+  "Monte meu plano de treino",
+  "Atualizar peso",
+  "Analise meu desempenho",
+];
 
 export function Chatbot() {
   const [chatOpen, setChatOpen] = useQueryState(

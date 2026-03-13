@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import Image from "next/image";
-import { Weight, Ruler, BicepsFlexed, User } from "lucide-react";
+import { Weight, Ruler, Scale, User } from "lucide-react";
 import { getServerSession } from "@/app/_lib/auth-server";
 import { getProgression, getPerformanceHistory } from "@/app/_lib/api/adaptive";
 import { getUserTrainData } from "@/app/_lib/api/fetch-generated";
@@ -53,8 +53,8 @@ export default async function ProfilePage() {
     : "—";
   const heightCm = trainData ? trainData.heightInCentimeters : "—";
   const age = trainData ? trainData.age : "—";
-  const bodyFatDisplay = trainData
-    ? `${Math.round(trainData.bodyFatPercentage * 100)}%`
+  const imcDisplay = trainData?.weightInGrams && trainData?.heightInCentimeters
+    ? (trainData.weightInGrams / 1000 / Math.pow(trainData.heightInCentimeters / 100, 2)).toFixed(1)
     : "—";
 
   return (
@@ -128,14 +128,14 @@ export default async function ProfilePage() {
 
           <div className="flex flex-col items-center gap-5 rounded-xl bg-[rgba(43,84,255,0.08)] p-5">
             <div className="flex items-center rounded-full bg-[rgba(43,84,255,0.08)] p-[9px]">
-              <BicepsFlexed className="size-4 text-[#2b54ff]" />
+              <Scale className="size-4 text-[#2b54ff]" />
             </div>
             <div className="flex flex-col items-center gap-1.5">
               <p className="font-display text-2xl font-semibold leading-[1.15] text-black">
-                {bodyFatDisplay}
+                {imcDisplay}
               </p>
               <p className="font-display text-xs uppercase leading-[1.4] text-[#656565]">
-                Gc
+                IMC
               </p>
             </div>
           </div>
