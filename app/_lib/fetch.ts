@@ -33,8 +33,18 @@ export const customFetch = async <T>(
   };
 
   const response = await fetch(requestUrl, requestInit);
-  const data = await getBody<T>(response);
 
+  if (!response.ok) {
+    let data: unknown;
+    try {
+      data = await response.json();
+    } catch {
+      data = { error: response.statusText || "Service Unavailable", code: "HTTP_ERROR" };
+    }
+    return { status: response.status, data, headers: response.headers } as T;
+  }
+
+  const data = await getBody<T>(response);
   return { status: response.status, data, headers: response.headers } as T;
 };
 

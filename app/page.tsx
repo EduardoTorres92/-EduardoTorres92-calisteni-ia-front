@@ -86,7 +86,22 @@ export default async function Home() {
         </div>
       </div>
 
-      {homeData && (
+      {!homeData ? (
+        <section className="flex flex-col gap-3 p-5">
+          <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-amber-200 bg-amber-50 p-6">
+            <p className="font-display text-center text-sm font-medium text-amber-800">
+              Não foi possível carregar os dados. O servidor pode estar temporariamente indisponível.
+            </p>
+            <Link
+              href="/"
+              className="rounded-full bg-[#2b54ff] px-4 py-2 font-display text-sm font-semibold text-white"
+            >
+              Atualizar página
+            </Link>
+          </div>
+          <ProgressionPreview progressions={progressionData.progressions} />
+        </section>
+      ) : (
         <>
           <section className="flex flex-col gap-3 px-5 pt-5">
             <h2 className="font-display text-lg font-semibold leading-[1.4] text-foreground">

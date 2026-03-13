@@ -11,9 +11,21 @@ import { ProgressionSection } from "./_components/progression-section";
 import { PerformanceCharts } from "./_components/performance-charts";
 
 export default async function ProfilePage() {
-  const session = await getServerSession();
+  let session: Awaited<ReturnType<typeof getServerSession>> = null;
+  try {
+    session = await getServerSession();
+  } catch {
+    session = null;
+  }
   if (!session) redirect("/auth");
-  if (await needsOnboarding()) redirect("/onboarding");
+
+  let needsOnboardingResult = true;
+  try {
+    needsOnboardingResult = await needsOnboarding();
+  } catch {
+    needsOnboardingResult = true;
+  }
+  if (needsOnboardingResult) redirect("/onboarding");
 
   let trainData = null;
   try {
