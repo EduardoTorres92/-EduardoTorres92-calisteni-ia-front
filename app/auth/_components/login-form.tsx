@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { authClient } from "@/app/_lib/auth-client";
 
 function GoogleIcon() {
   return (
@@ -26,16 +25,26 @@ function GoogleIcon() {
   );
 }
 
+const getApiBase = () =>
+  (typeof window !== "undefined"
+    ? process.env.NEXT_PUBLIC_API_URL
+    : "")?.replace(/\/$/, "") ?? "";
+
 export function LoginForm() {
-  const handleGoogleSignIn = async () => {
-    const { error } = await authClient.signIn.social({
+  const handleGoogleSignIn = () => {
+    const base = getApiBase();
+    if (!base) {
+      console.error("NEXT_PUBLIC_API_URL não definido");
+      return;
+    }
+    // Redirect direto para a API: funciona com Django (e com Node/better-auth se a rota existir).
+    // Evita que o client better-auth use fetch e espere JSON quando a API devolve redirect.
+    const params = new URLSearchParams({
       provider: "google",
       callbackURL: window.location.origin,
+      errorCallbackURL: `${window.location.origin}/auth`,
     });
-
-    if (error) {
-      console.error("Erro ao fazer login:", error);
-    }
+    window.location.href = `${base}/api/auth/signin/social?${params.toString()}`;
   };
 
   return (

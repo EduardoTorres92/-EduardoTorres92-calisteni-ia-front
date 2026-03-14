@@ -5,9 +5,9 @@ const getBody = <T>(c: Response | Request): Promise<T> => {
 };
 
 const getUrl = (contextUrl: string): string => {
-  const newUrl = new URL(`${process.env.NEXT_PUBLIC_API_URL}${contextUrl}`);
-  const requestUrl = new URL(`${newUrl}`);
-  return requestUrl.toString();
+  const base = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ?? "";
+  const path = contextUrl.startsWith("/") ? contextUrl : `/${contextUrl}`;
+  return base ? `${base}${path}` : `http://127.0.0.1:8000${path}`;
 };
 
 const getHeaders = async (headers?: HeadersInit): Promise<HeadersInit> => {
